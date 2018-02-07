@@ -1,6 +1,9 @@
 import requests
 from html.parser import HTMLParser
 import sys
+import time
+
+INTERVAL = 60
 
 hostname = sys.argv[1]
 password = sys.argv[2]
@@ -8,15 +11,6 @@ password = sys.argv[2]
 session = requests.Session()
 
 headers = {'content-type': 'application/x-www-form-urlencoded'}
-
-# Login
-session.post("http://{0}/login.cgi".format(hostname), data="password={0}".format(password), headers=headers)
-
-# Fetch the traffic data
-response = session.get("http://{0}/portStatistics.cgi".format(hostname))
-
-# Logout - to clean up cookies
-session.get("http://{0}/logout.cgi".format(hostname))
 
 # create a subclass and override the handler methods
 class MyHTMLParser(HTMLParser):
@@ -34,9 +28,33 @@ class MyHTMLParser(HTMLParser):
         except ValueError:
             pass
 
+timestamp = int(time.time())
+timestamp -= (timestamp % INTERVAL)
 
-data = bytes.decode(response.content)
+while True:
 
-# instantiate the parser and fed it some HTML
-parser = MyHTMLParser()
-parser.feed(data)
+    delay = ((timestamp - int(time.time()))%INTERVAL)
+
+    if(delay == 0): delay = INTERVAL
+
+    print(delay)
+    time.sleep(delay)
+
+    # Login
+    session.post("http://{0}/login.cgi".format(hostname), data="password={0}".format(password), headers=headers)
+
+    # Fetch the traffic data
+    response = session.get("http://{0}/portStatistics.cgi".format(hostname))
+
+    # Logout - to clean up cookies
+    session.get("http://{0}/logout.cgi".format(hostname))
+
+
+    data = bytes.decode(response.content)
+
+    # instantiate the parser and fed it some HTML
+    parser = MyHTMLParser()
+    parser.feed(data)
+
+
+    
