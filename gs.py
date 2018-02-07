@@ -8,8 +8,9 @@ import time
 INTERVAL = 60
 
 if len(sys.argv) < 3:
-	print("Usage: {0} <switch_hostname> <password>", sys.argv[0])
-	exit(-1)
+    print("ERROR: Not enough args")
+    print("Usage: %s <switch_hostname> <password>" % sys.argv[0])
+    exit(-1)
 
 hostname = sys.argv[1]
 password = sys.argv[2]
