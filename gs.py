@@ -46,17 +46,14 @@ class MyHTMLParser(HTMLParser):
         except ValueError:
             pass
 
-timestamp = int(time.time())
-timestamp -= (timestamp % INTERVAL)
+start_time = int(time.time())
 
 while True:
 
-    delay = ((timestamp - int(time.time()))%INTERVAL)
 
-    if(delay == 0): delay = INTERVAL
 
-    print(delay)
-    time.sleep(delay)
+    #print(delay)
+    #time.sleep(delay)
 
     # Login
     session.post("http://{0}/login.cgi".format(hostname), data="password={0}".format(password), headers=headers)
@@ -76,3 +73,9 @@ while True:
 
     if not parser.gotsomething:
         print("Didn't get anything, check your hostname and password")
+
+
+    delay = ((start_time - int(time.time()))%INTERVAL)
+    if(delay == 0):
+        delay = INTERVAL
+    time.sleep(delay)
