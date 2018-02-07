@@ -50,11 +50,6 @@ start_time = int(time.time())
 
 while True:
 
-
-
-    #print(delay)
-    #time.sleep(delay)
-
     # Login
     session.post("http://{0}/login.cgi".format(hostname), data="password={0}".format(password), headers=headers)
 
